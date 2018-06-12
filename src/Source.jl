@@ -101,8 +101,7 @@ Results are checked for and an `ODBC.ResultBlock` is allocated to prepare for fe
 function Source(dsn::DSN, query::AbstractString; weakrefstrings::Bool=true, noquery::Bool=false)
     stmt = dsn.stmt_ptr
     noquery || ODBC.ODBCFreeStmt!(stmt)
-    supportsreset = ODBC.API.SQLSetStmtAttr(stmt, ODBC.API.SQL_ATTR_CURSOR_SCROLLABLE, ODBC.API.SQL_SCROLLABLE, ODBC.API.SQL_IS_INTEGER)
-    supportsreset &= ODBC.API.SQLSetStmtAttr(stmt, ODBC.API.SQL_ATTR_CURSOR_TYPE, ODBC.API.SQL_CURSOR_STATIC, ODBC.API.SQL_IS_INTEGER)
+    supportsreset = 0
     noquery || (ODBC.@CHECK stmt ODBC.API.SQL_HANDLE_STMT ODBC.API.SQLExecDirect(stmt, query))
     rows, cols = Ref{Int}(), Ref{Int16}()
     ODBC.API.SQLNumResultCols(stmt, cols)
